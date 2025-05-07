@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа - Agro Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .checkout-container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px #0001; padding: 32px; }
+        .checkout-title { text-align: center; margin-bottom: 24px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+        .cart-items { margin-bottom: 18px; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .cart-total { text-align: right; font-weight: bold; margin-bottom: 18px; }
+        .btn-primary { width: 100%; background: #219a1a; color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-primary:hover { background: #176d13; }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <h1 class="checkout-title">Оформление заказа</h1>
+        <form id="orderForm" onsubmit="createOrder(event)">
+            <div class="form-group">
+                <label for="name">Имя</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="text" id="phone" required pattern="[0-9\-\+\s\(\)]{10,16}">
+            </div>
+            <div class="form-group">
+                <label for="city">Город</label>
+                <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+                <label for="street">Улица</label>
+                <input type="text" id="street" required>
+            </div>
+            <div class="form-group">
+                <label for="zipCode">Почтовый индекс</label>
+                <input type="text" id="zipCode" required>
+            </div>
+            <div class="form-group">
+                <label for="paymentMethod">Способ оплаты</label>
+                <select id="paymentMethod" required>
+                    <option value="card">Банковская карта</option>
+                    <option value="cash">Наличными при получении</option>
+                </select>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-total" id="cartTotal"></div>
+            <button type="submit" class="btn-primary">Подтвердить заказ</button>
+        </form>
+    </div>
+    <script>
+        function getCart() {
+            return JSON.parse(localStorage.getItem('cart') || '[]');
+        }
+        function displayCart() {
+            const cart = getCart();
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            if (!cart.length) {
+                cartItems.innerHTML = '<p>Корзина пуста</p>';
+                cartTotal.textContent = '';
+                return;
+            }
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>${item.price * item.quantity} ₸</span>
+                </div>
+            `).join('');
+            cartTotal.textContent = 'Итого: ' + cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + ' ₸';
+        }
+        async function createOrder(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const shippingAddress = {
+                street: document.getElementById('street').value,
+                city: document.getElementById('city').value,
+                zipCode: document.getElementById('zipCode').value
+            };
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const cartItems = getCart();
+            if (!cartItems.length) {
+                alert('Корзина пуста!');
+                return;
+            }
+            try {
+                const response = await fetch('/api/orders/guest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        phone,
+                        shippingAddress,
+                        paymentMethod,
+                        cartItems
+                    })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.removeItem('cart');
+                    window.location.href = 'order-success.html';
+                } else {
+                    alert('Ошибка при создании заказа: ' + data.message);
+                }
+            } catch (error) {
+                alert('Произошла ошибка при создании заказа');
+            }
+        }
+        window.onload = displayCart;
+    </script>
+</body>
+</html> 

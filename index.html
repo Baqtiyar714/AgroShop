@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Өсімдіктер дүкені</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700;600;400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container" style="display: flex; align-items: center; gap: 20px;">
+        <h1 style="display: flex; align-items: center; gap: 12px;">
+          <img src="images/Логотип (2).jpg" alt="AgroShop Logo" style="height: 40px; vertical-align: middle;" />
+          <span class="agro-green">Agro</span><span class="shop-green">Shop</span>
+        </h1>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link active">Басты бет</a>
+            <a href="about.html" class="nav-link">Біз туралы</a>
+            <a href="contacts.html" class="nav-link">Байланыс</a>
+            <a href="sovety.html" class="nav-link">Кеңестер</a>
+        </nav>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 20px;">
+            <button id="cartButton" class="cart-button">
+              🛒 <span id="cartCount">0</span>
+            </button>
+            <select id="languageSwitcher">
+              <option value="kk">Қазақша</option>
+              <option value="ru">Русский</option>
+              <option value="en">English</option>
+            </select>
+        </div>
+    </div>
+  </header>
+
+  <!-- Модальное окно корзины -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Себет</h2>
+        <button class="close-button">&times;</button>
+      </div>
+      <div id="cartItems" class="cart-items">
+        <!-- Здесь будут отображаться товары -->
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total">
+          Барлығы: <span id="cartTotal">0</span> ₸
+        </div>
+        <a href="checkout.html" class="checkout-button" style="display:inline-block;text-align:center;">Тапсырыс беру</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="catalog-layout">
+      <aside class="filter-sidebar">
+        <div class="filter-header">
+          <h3 id="filterTitle" data-i18n="filters">Фильтрлер</h3>
+          <button class="clear-filters" id="clearFiltersBtn" data-i18n="clear">Тазалау</button>
+          <button class="show-filters" id="showFiltersBtn" data-i18n="show" style="margin-top: 10px; background: #219a1a; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 16px;">Көру</button>
+        </div>
+        
+        <div class="filter-section">
+          <h4 id="categoryTitle" data-i18n="categories">Категориялар</h4>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="houseplant">
+              <span id="catHouseplant" data-i18n="catHouseplant">Үй өсімдіктері</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="seed">
+              <span id="catSeed" data-i18n="catSeed">Тұқымдар</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="flower">
+              <span id="catFlower" data-i18n="catFlower">Гүлдер</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="green">
+              <span id="catGreen" data-i18n="catGreen">Жасыл</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="tree">
+              <span id="catTree" data-i18n="catTree">Жеміс ағаштары</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="bush">
+              <span id="catBush" data-i18n="catBush">Жеміс бұталары</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="yardtree">
+              <span id="catYardtree" data-i18n="catYardtree">Аула ағаштары</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <h4 id="availabilityTitle" data-i18n="availability">Қолжетімділік</h4>
+          <div class="filter-options">
+            <label class="filter-option">
+              <input type="checkbox" name="availability" value="in-stock">
+              <span id="availInStock" data-i18n="availInStock">Қоймада бар</span>
+            </label>
+            <label class="filter-option">
+              <input type="checkbox" name="availability" value="pre-order">
+              <span id="availPreOrder" data-i18n="availPreOrder">Алдын ала тапсырыс</span>
+            </label>
+          </div>
+        </div>
+      </aside>
+
+      <div class="catalog-content">
+        <div class="search-sort-filter">
+          <input type="text" placeholder="Іздеу..." />
+          <select>
+            <option>Сұрыптау: Жаңадан ескіге</option>
+            <option>Баға: Арзаннан қымбатқа</option>
+            <option>Баға: Қымбаттан арзанға</option>
+            <option>Танымал</option>
+          </select>
+        </div>
+
+        <div class="announcement">
+          🌱 Жаңа! Мамыр айына арналған жеңілдіктер мен арнайы ұсыныстар. Қазір тапсырыс беріп, 20% жеңілдікке ие болыңыз!
+        </div>
+
+        <div class="product-grid" id="all-products">
+          <div class="product" data-product="orchid" data-category="houseplant flower">
+            <img src="images/Орхидея.jpg" alt="Орхидея" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=orchid'">
+            <div class="product-content">
+              <div class="product-title">Орхидея</div>
+              <div class="product-price">7790 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="geranium" data-category="houseplant flower">
+            <img src="images/Герань (Пеларгония).jpg" alt="Герань" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=geranium'">
+            <div class="product-content">
+              <div class="product-title">Герань (Пеларгония)</div>
+              <div class="product-price">3490 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="spathiphyllum" data-category="houseplant flower">
+            <img src="images/Спатифиллум.jpg" alt="Спатифиллум" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=spathiphyllum'">
+            <div class="product-content">
+              <div class="product-title">Спатифиллум (Әйел бақыты)</div>
+              <div class="product-price">4490 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="anthurium" data-category="houseplant flower">
+            <img src="images/Антуриум.jpg" alt="Антуриум" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=anthurium'">
+            <div class="product-content">
+              <div class="product-title">Антуриум</div>
+              <div class="product-price">6490 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="zamioculcas" data-category="houseplant">
+            <img src="images/Замиокулькас.jpg" alt="Замиокулькас" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=zamioculcas'">
+            <div class="product-content">
+              <div class="product-title">Замиокулькас (Ақша ағашы)</div>
+              <div class="product-price">6090 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="sansevieria" data-category="houseplant">
+            <img src="images/Сансевиерия.jpg" alt="Сансевиерия" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=sansevieria'">
+            <div class="product-content">
+              <div class="product-title">Сансевиерия (Тещин язык)</div>
+              <div class="product-price">4490 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="chlorophytum" data-category="houseplant">
+            <img src="images/Хлорофитум.jpg" alt="Хлорофитум" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=chlorophytum'">
+            <div class="product-content">
+              <div class="product-title">Хлорофитум</div>
+              <div class="product-price">3190 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="violet" data-category="houseplant flower">
+            <img src="images/Фиалка.jpg" alt="Фиалка" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=violet'">
+            <div class="product-content">
+              <div class="product-title">Фиалка (Шегіргүл)</div>
+              <div class="product-price">2590 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="monstera" data-category="houseplant">
+            <img src="images/Монстера.jpg" alt="Монстера" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=monstera'">
+            <div class="product-content">
+              <div class="product-title">Монстера</div>
+              <div class="product-price">9990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="ficus" data-category="houseplant">
+            <img src="images/Фикус.jpg" alt="Фикус" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=ficus'">
+            <div class="product-content">
+              <div class="product-title">Фикус</div>
+              <div class="product-price">7990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="dracaena" data-category="houseplant">
+            <img src="images/Драцена.jpg" alt="Драцена" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=dracaena'">
+            <div class="product-content">
+              <div class="product-title">Драцена</div>
+              <div class="product-price">6390 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="fern" data-category="houseplant">
+            <img src="images/Папоротник.jpg" alt="Папоротник" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=fern'">
+            <div class="product-content">
+              <div class="product-title">Папоротник</div>
+              <div class="product-price">4190 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="pilea" data-category="houseplant flower">
+            <img src="images/Пилея.jpg" alt="Пилея" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=pilea'">
+            <div class="product-content">
+              <div class="product-title">Пилея</div>
+              <div class="product-price">4290 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="calathea" data-category="houseplant flower">
+            <img src="images/Калатея.jpg" alt="Калатея" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=calathea'">
+            <div class="product-content">
+              <div class="product-title">Калатея</div>
+              <div class="product-price">6990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="aglaonema" data-category="houseplant">
+            <img src="images/Аглаонема.jpg" alt="Аглаонема" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=aglaonema'">
+            <div class="product-content">
+              <div class="product-title">Аглаонема</div>
+              <div class="product-price">5990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="aloe" data-category="houseplant">
+            <img src="images/Алоэ Вера.jpg" alt="Алоэ вера" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=aloe'">
+            <div class="product-content">
+              <div class="product-title">Алоэ вера</div>
+              <div class="product-price">2990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="cactus" data-category="houseplant">
+            <img src="images/Кактус.jpg" alt="Кактус" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=cactus'">
+            <div class="product-content">
+              <div class="product-title">Кактус</div>
+              <div class="product-price">2990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="croton" data-category="houseplant flower">
+            <img src="images/Кротон.jpg" alt="Кротон" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=croton'">
+            <div class="product-content">
+              <div class="product-title">Кротон</div>
+              <div class="product-price">5990 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="cucumber" data-category="seed">
+            <img src="images/Огурцы.jpg" alt="Қияр" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=cucumber'">
+            <div class="product-content">
+              <div class="product-title">Қияр тұқымы</div>
+              <div class="product-price">490 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="tomato" data-category="seed">
+            <img src="images/Помидор.jpg" alt="Қызанақ" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=tomato'">
+            <div class="product-content">
+              <div class="product-title">Қызанақ тұқымы</div>
+              <div class="product-price">820 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="chili" data-category="seed">
+            <img src="images/Острый перец(Чили).jpg" alt="Острый перец (Чили)" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=chili'">
+            <div class="product-content">
+              <div class="product-title">Ащы бұрыш (Чили)</div>
+              <div class="product-price">790 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="basil" data-category="green">
+            <img src="images/Базилик.jpg" alt="Болжырай (Базилик)" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=basil'">
+            <div class="product-content">
+              <div class="product-title">Болжырай (Базилик)</div>
+              <div class="product-price">690 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="parsley" data-category="green">
+            <img src="images/Петрушка.jpg" alt="Ақжелкен" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=parsley'">
+            <div class="product-content">
+              <div class="product-title">Ақжелкен</div>
+              <div class="product-price">675 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="carrot" data-category="seed">
+            <img src="images/Семена моркови.jpg" alt="Сәбіз" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=carrot'">
+            <div class="product-content">
+              <div class="product-title">Сәбіз тұқымы</div>
+              <div class="product-price">635 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="garlic" data-category="seed">
+            <img src="images/Семена чеснока.jpg" alt="Сарымсақ" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=garlic'">
+            <div class="product-content">
+              <div class="product-title">Сарымсақ тұқымы</div>
+              <div class="product-price">590 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="corn" data-category="seed">
+            <img src="images/Семена кукурузы.jpeg" alt="Жүгері" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=corn'">
+            <div class="product-content">
+              <div class="product-title">Жүгері тұқымы 5г.</div>
+              <div class="product-price">490 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="bellpepper" data-category="seed">
+            <img src="images/Семена болгарского перца.jpg" alt="Қызыл бұрыш" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=bellpepper'">
+            <div class="product-content">
+              <div class="product-title">Қызыл бұрыш тұқымы 20 шт.</div>
+              <div class="product-price">1190 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="watermelon" data-category="seed">
+            <img src="images/Семена арбуза.jpg" alt="Қарбыз" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=watermelon'">
+            <div class="product-content">
+              <div class="product-title">Қарбыз тұқымы 10 шт.</div>
+              <div class="product-price">790 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="melon" data-category="seed">
+            <img src="images/Семена дыни.jpg" alt="Қауын" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=melon'">
+            <div class="product-content">
+              <div class="product-title">Қауын тұқымы 15 шт.</div>
+              <div class="product-price">890 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="grapes" data-category="seed">
+            <img src="images/Семена винограда.jpg" alt="Жүзім" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=grapes'">
+            <div class="product-content">
+              <div class="product-title">Жүзім тұқымы 15шт.</div>
+              <div class="product-price">1790 ₸</div>
+            </div>
+          </div>
+
+          <div class="product" data-product="apple_winter" data-category="tree">
+            <img src="images/Яблоня (зимний сорт).jpg" alt="Яблоки зимние" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=apple_winter'">
+            <div class="product-content">
+              <div class="product-title">Яблоки (зимние сорта) 1.7 м.</div>
+              <div class="product-price">4490 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="apple_summer" data-category="tree">
+            <img src="images/Яблоня (летний сорт).jpg" alt="Яблоки летние" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=apple_summer'">
+            <div class="product-content">
+              <div class="product-title">Яблоки (летние сорта) 1.5 м.</div>
+              <div class="product-price">3790 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="apple_autumn" data-category="tree">
+            <img src="images/Яблоня (осенний сорт).jpg" alt="Яблоки осенние" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=apple_autumn'">
+            <div class="product-content">
+              <div class="product-title">Яблоки (осенние сорта) 1.75 м.</div>
+              <div class="product-price">4990 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="pear" data-category="tree">
+            <img src="images/Груша.jpg" alt="Груша" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=pear'">
+            <div class="product-content">
+              <div class="product-title">Груша 2 м.</div>
+              <div class="product-price">5200 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="apricot" data-category="tree">
+            <img src="images/Абрикос.jpg" alt="Абрикос" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=apricot'">
+            <div class="product-content">
+              <div class="product-title">Абрикос 1.4 м.</div>
+              <div class="product-price">4190 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="peach" data-category="tree">
+            <img src="images/Персик.jpg" alt="Персик" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=peach'">
+            <div class="product-content">
+              <div class="product-title">Персик 1 м.</div>
+              <div class="product-price">4090 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="plum" data-category="tree">
+            <img src="images/Слива.jpg" alt="Слива" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=plum'">
+            <div class="product-content">
+              <div class="product-title">Слива 1 м.</div>
+              <div class="product-price">4590 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="cherry" data-category="tree">
+            <img src="images/Вишня.jpg" alt="Вишня" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=cherry'">
+            <div class="product-content">
+              <div class="product-title">Вишня 1.2 м.</div>
+              <div class="product-price">5500 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="sweetcherry" data-category="tree">
+            <img src="images/Черешня.jpg" alt="Вишня красная" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=sweetcherry'">
+            <div class="product-content">
+              <div class="product-title">Вишня красная (черешня) 1.1 м.</div>
+              <div class="product-price">4900 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="pear_berry" data-category="tree">
+            <img src="images/Дюшес.jpg" alt="Груша ягодная (груша Ноябрьская, Дюшес)" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=pear_berry'">
+            <div class="product-content">
+              <div class="product-title">Груша ягодная (груша Ноябрьская, Дюшес) 1 м.</div>
+              <div class="product-price">4890 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="currant_black" data-category="bush">
+            <img src="images/Смородина черная.jpg" alt="Смородина черная" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=currant_black'">
+            <div class="product-content">
+              <div class="product-title">Смородина (черная)</div>
+              <div class="product-price">3000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="currant_red" data-category="bush">
+            <img src="images/Смородина красная.jpg" alt="Смородина красная" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=currant_red'">
+            <div class="product-content">
+              <div class="product-title">Смородина (красная) </div>
+              <div class="product-price">4290 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="currant_white" data-category="bush">
+            <img src="images/Смородина белая.jpg" alt="Смородина белая" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=currant_white'">
+            <div class="product-content">
+              <div class="product-title">Смородина (белая)</div>
+              <div class="product-price">2390 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="raspberry" data-category="bush">
+            <img src="images/Малина.jpg" alt="Малина" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=raspberry'">
+            <div class="product-content">
+              <div class="product-title">Малина</div>
+              <div class="product-price">2000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="strawberry" data-category="bush">
+            <img src="images/Клубника (земляника).jpg" alt="Клубника" style="cursor:pointer; width:100%; border-radius:12px;">
+            <div class="product-content">
+              <div class="product-title">Клубника (земляника)</div>
+              <div class="product-price">2200 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="blackberry" data-category="bush">
+            <img src="images/Ежевика.jpg" alt="Ежевика" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=blackberry'">
+            <div class="product-content">
+              <div class="product-title">Ежевика</div>
+              <div class="product-price">2300 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="blackberry_large" data-category="bush">
+            <img src="images/Ежевика (крупноплодная).jpg" alt="Ежевика крупноплодная" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=blackberry_large'">
+            <div class="product-content">
+              <div class="product-title">Ежевика (крупноплодная)</div>
+              <div class="product-price">2500 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="cherry_plum" data-category="bush">
+            <img src="images/Алыча (китайская слива).jpeg" alt="Алыча (китайская слива)" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=cherry_plum'">
+            <div class="product-content">
+              <div class="product-title">Алыча (китайская слива)</div>
+              <div class="product-price">2400 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="spruce" data-category="yardtree">
+            <img src="images/Сосна.jpg" alt="Шырша" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=spruce'">
+            <div class="product-content">
+              <div class="product-title">Шырша</div>
+              <div class="product-price">6000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="juniper" data-category="yardtree">
+            <img src="images/Можжевельник.jpg" alt="Можжевельник" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=juniper'">
+            <div class="product-content">
+              <div class="product-title">Можжевельник</div>
+              <div class="product-price">5500 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="birch" data-category="yardtree">
+            <img src="images/Береза белая.jpg" alt="Береза белая" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=birch'">
+            <div class="product-content">
+              <div class="product-title">Береза белая</div>
+              <div class="product-price">4200 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="maple" data-category="yardtree">
+            <img src="images/Клен.jpg" alt="Клен" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=maple'">
+            <div class="product-content">
+              <div class="product-title">Клен</div>
+              <div class="product-price">4300 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="linden" data-category="yardtree">
+            <img src="images/Липа.jpg" alt="Липа" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=linden'">
+            <div class="product-content">
+              <div class="product-title">Липа</div>
+              <div class="product-price">4700 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="rowan" data-category="yardtree">
+            <img src="images/Рябина.jpg" alt="Рябина" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=rowan'">
+            <div class="product-content">
+              <div class="product-title">Рябина</div>
+              <div class="product-price">4100 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="jida" data-category="yardtree">
+            <img src="images/Жиде.jpg" alt="Жида" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=jida'">
+            <div class="product-content">
+              <div class="product-title">Жиде</div>
+              <div class="product-price">3900 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="catalpa" data-category="yardtree">
+            <img src="images/Катальпа.jpg" alt="Катальпа" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=catalpa'">
+            <div class="product-content">
+              <div class="product-title">Катальпа (ірі жапырақты)</div>
+              <div class="product-price">6500 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="maple_architectural" data-category="yardtree">
+            <img src="images/Архитектурный клен.png" alt="Архитектуралық үйеңкі" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=maple_architectural'">
+            <div class="product-content">
+              <div class="product-title">Архитектуралық үйеңкі (қызыл, алтын)</div>
+              <div class="product-price">7000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="rowan_architectural" data-category="yardtree">
+            <img src="images/Архитектурная рябина.jpg" alt="Архитектуралық шетен" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=rowan_architectural'">
+            <div class="product-content">
+              <div class="product-title">Архитектуралық шетен (ақ гүлді, қызыл жемісті)</div>
+              <div class="product-price">6500 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="spruce_blue" data-category="yardtree">
+            <img src="images/Голубая сосна.jpg" alt="Көк шырша" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=spruce_blue'">
+            <div class="product-content">
+              <div class="product-title">Көк шырша (сәндік)</div>
+              <div class="product-price">12000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="oak_red" data-category="yardtree">
+            <img src="images/Красный дуб.jpg" alt="Қызыл емен" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=oak_red'">
+            <div class="product-content">
+              <div class="product-title">Қызыл емен (күзде қызыл жапырақ)</div>
+              <div class="product-price">9000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="elm" data-category="yardtree">
+            <img src="images/Вяз (карагач).jpg" alt="Қарағаш" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=elm'">
+            <div class="product-content">
+              <div class="product-title">Қарағаш (қарағаш)</div>
+              <div class="product-price">7000 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="ash" data-category="yardtree">
+            <img src="images/Кузнец (ясень).jpg" alt="Кузнец (ясень)" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=ash'">
+            <div class="product-content">
+              <div class="product-title">Кузнец (ясень)</div>
+              <div class="product-price">8500 ₸</div>
+            </div>
+          </div>
+          <div class="product" data-product="pseudo_sakura" data-category="yardtree">
+            <img src="images/Псевдосакура (для цветения персика или абрикоса).jpg" alt="Жалған сакура" style="cursor:pointer; width:100%; border-radius:12px;" onclick="window.location.href='product-details.html?product=pseudo_sakura'">
+            <div class="product-content">
+              <div class="product-title">Жалған сакура (персик немесе өрік гүлдеуі үшін)</div>
+              <div class="product-price">9500 ₸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  </div>
+  <div class="feedback-section">
+    <h2>Отзывы покупателей</h2>
+    <div class="feedback-list">
+      <div class="feedback-item">
+        <div class="feedback-name">Анна К.</div>
+        <div class="feedback-text">Очень довольна качеством растений и быстрой доставкой. Спасибо AgroShop!</div>
+      </div>
+      <div class="feedback-item">
+        <div class="feedback-name">Иван П.</div>
+        <div class="feedback-text">Большой выбор семян, все взошли отлично. Буду заказывать еще!</div>
+      </div>
+      <div class="feedback-item">
+        <div class="feedback-name">Мария С.</div>
+        <div class="feedback-text">Понравился сервис поддержки, помогли выбрать подходящее растение для дома.</div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-row">
+      <div class="footer-col">
+        <h3 id="footerAboutTitle">О нас</h3>
+        <p id="footerAboutText">
+          AgroShop - это современная платформа для любителей растений и семян. Мы предлагаем широкий ассортимент качественной продукции, быструю доставку и консультации специалистов для вашего дома и сада.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3 id="footerLinksTitle">Быстрые ссылки</h3>
+        <ul>
+          <li><a href="index.html" id="footerLinkHome">Главная</a></li>
+          <li><a href="about.html" id="footerLinkAbout">О нас</a></li>
+          <li><a href="contacts.html" id="footerLinkContact">Контакты</a></li>
+          <li><a href="sovety.html" id="footerLinkContact">Советы</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 id="footerContactTitle">Связаться с нами</h3>
+        <ul>
+          <li id="footerContactAddress">Алматы, ул. Сатпаева, 22</li>
+          <li id="footerContactEmail">Email: agroshop@gmail.com</li>
+          <li id="footerContactPhone">Телефон: +7 (747) 321 36 05</li>
+          <li style="margin-top: 12px; display: flex; gap: 18px; align-items: center;">
+            <a href="https://www.instagram.com/agroshop_almaty?igsh=MXNjZGQ3d3M4c3dxOA==" target="_blank" style="display:inline-block;">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="28" height="28" style="filter: invert(1);">
+            </a>
+            <a href="https://wa.me/77763559482" target="_blank" style="display:inline-block;">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="28" height="28" style="filter: invert(1);">
+            </a>
+            <a href="https://www.tiktok.com/@agroshop74?_t=ZM-8w6gLQEeve3&_r=1" target="_blank" style="display:inline-block;">
+              <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok" width="28" height="28" style="filter: invert(1);">
+            </a>
+        </ul>
+      </div>
+    </div>
+  </footer>
+  <script src="js/script.js"></script>
+  <script src="js/translation.js"></script>
+</body>
+</html>
